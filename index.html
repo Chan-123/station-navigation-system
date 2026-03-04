@@ -3,7 +3,7 @@
 
 <head>
 
-<title>Smart Station Login</title>
+<title>Smart Station Navigation - Admin</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 
@@ -19,34 +19,60 @@ align-items:center;
 background:linear-gradient(135deg,#0f4c81,#1e3c72);
 }
 
+/* LOGIN CARD */
+
 .login-box{
 background:white;
 padding:40px;
 border-radius:12px;
-box-shadow:0 10px 25px rgba(0,0,0,0.3);
+box-shadow:0 12px 30px rgba(0,0,0,0.35);
 text-align:center;
-width:320px;
+width:350px;
 }
 
-h2{
-margin-bottom:20px;
+/* RAILWAY LOGO */
+
+.logo{
+width:90px;
+margin-bottom:10px;
+}
+
+/* HEADINGS */
+
+h1{
+margin:5px 0;
+font-size:22px;
 color:#0f4c81;
 }
 
+h2{
+margin:2px 0 20px;
+font-size:16px;
+font-weight:500;
+color:#444;
+}
+
+/* INPUTS */
+
 input{
-width:90%;
-padding:10px;
-margin:10px 0;
+width:92%;
+padding:12px;
+margin:8px 0;
 border-radius:6px;
 border:1px solid #ccc;
+font-size:14px;
 }
+
+/* BUTTON */
 
 button{
 width:95%;
-padding:10px;
+padding:12px;
+margin-top:10px;
 border:none;
 background:#0f4c81;
 color:white;
+font-size:15px;
 border-radius:6px;
 cursor:pointer;
 }
@@ -55,9 +81,18 @@ button:hover{
 background:#1e6fb9;
 }
 
+/* ERROR */
+
 .error{
 color:red;
 font-size:14px;
+margin-top:10px;
+}
+
+.footer{
+margin-top:20px;
+font-size:12px;
+color:#777;
 }
 
 </style>
@@ -68,7 +103,13 @@ font-size:14px;
 
 <div class="login-box">
 
-<h2>🚆 Admin Login</h2>
+<!-- RAILWAY LOGO -->
+<img src="images/railway-logo.png" class="logo">
+
+<h1>Southern Railway</h1>
+<h2>Chennai Division</h2>
+
+<h3>🚉 Admin Login</h3>
 
 <input type="text" id="username" placeholder="Username">
 
@@ -77,6 +118,10 @@ font-size:14px;
 <button onclick="login()">Login</button>
 
 <p class="error" id="error"></p>
+
+<div class="footer">
+Smart Station Navigation System
+</div>
 
 </div>
 
@@ -102,4 +147,5 @@ document.getElementById("error").innerText="Invalid Username or Password";
 </script>
 
 </body>
+
 </html>
