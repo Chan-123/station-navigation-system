@@ -226,18 +226,70 @@ const svg=document.getElementById("routeLayer")
 
 svg.innerHTML=""
 
-let path="M "+points[0].x+" "+points[0].y
+/* START POINT */
 
-for(let i=1;i<points.length;i++){
+let start=document.createElementNS(
+"http://www.w3.org/2000/svg",
+"circle"
+)
 
-path+=" L "+points[i].x+" "+points[i].y
+start.setAttribute("cx",points[0].x)
+start.setAttribute("cy",points[0].y)
+start.setAttribute("r","6")
+start.setAttribute("fill","red")
 
+svg.appendChild(start)
+
+/* CREATE ROUTE LINE */
+
+let polyline=document.createElementNS(
+"http://www.w3.org/2000/svg",
+"polyline"
+)
+
+let pathPoints=points.map(p=>p.x+","+p.y).join(" ")
+
+polyline.setAttribute("points",pathPoints)
+polyline.setAttribute("fill","none")
+polyline.setAttribute("stroke","#007bff")
+polyline.setAttribute("stroke-width","6")
+polyline.setAttribute("stroke-linecap","round")
+polyline.setAttribute("stroke-linejoin","round")
+
+svg.appendChild(polyline)
+
+/* ROUTE ANIMATION */
+
+let length=polyline.getTotalLength()
+
+polyline.style.strokeDasharray=length
+polyline.style.strokeDashoffset=length
+
+polyline.animate(
+[
+{strokeDashoffset:length},
+{strokeDashoffset:0}
+],
+{
+duration:1500,
+easing:"ease-out",
+fill:"forwards"
 }
+)
 
-svg.innerHTML=`
-<path d="${path}" stroke="#007bff" stroke-width="6"
-fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-`
+/* DESTINATION POINT */
+
+let end=document.createElementNS(
+"http://www.w3.org/2000/svg",
+"circle"
+)
+
+end.setAttribute("cx",points[points.length-1].x)
+end.setAttribute("cy",points[points.length-1].y)
+end.setAttribute("r","6")
+end.setAttribute("fill","green")
+
+svg.appendChild(end)
 
 }
 
