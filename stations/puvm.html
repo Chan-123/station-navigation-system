@@ -41,6 +41,8 @@ width:100%;
 border-radius:10px;
 }
 
+/* route overlay */
+
 .route-layer{
 position:absolute;
 top:0;
@@ -49,6 +51,8 @@ width:100%;
 height:100%;
 pointer-events:none;
 }
+
+/* QR location marker */
 
 .marker{
 position:absolute;
@@ -59,12 +63,41 @@ border-radius:50%;
 display:none;
 }
 
+/* recommended blocks */
+
 .recommended{
 position:absolute;
 width:30px;
 height:30px;
 border:3px solid lime;
 border-radius:50%;
+}
+
+/* amenity icons */
+
+.amenity{
+position:absolute;
+font-size:22px;
+cursor:pointer;
+transform:translate(-50%,-50%);
+}
+
+.amenity:hover{
+transform:translate(-50%,-50%) scale(1.2);
+}
+
+/* tooltip */
+
+.tooltip{
+position:absolute;
+background:#000;
+color:white;
+padding:4px 8px;
+border-radius:5px;
+font-size:12px;
+white-space:nowrap;
+display:none;
+transform:translate(-50%,-140%);
 }
 
 .location{
@@ -105,6 +138,13 @@ margin-top:15px;
 font-weight:500;
 }
 
+.highlight{
+transform:translate(-50%,-50%) scale(1.6);
+background:yellow;
+border-radius:50%;
+padding:5px;
+}
+
 </style>
 
 </head>
@@ -120,19 +160,19 @@ font-weight:500;
 
 <div class="container">
 
-<div class="map-container">
+<div class="map-container" id="mapContainer">
 
 <img src="../maps/puvm-map.png" class="station-map">
 
-<!-- SVG ROUTE LAYER -->
+<!-- ROUTE LAYER -->
 <svg id="routeLayer" class="route-layer"></svg>
 
-<!-- current location marker -->
+<!-- CURRENT LOCATION -->
 <div id="marker" class="marker"></div>
 
-<!-- recommended entry blocks -->
-<div class="recommended" style="top:360px; left:720px;"></div> <!-- Block A -->
-<div class="recommended" style="top:200px; left:260px;"></div> <!-- Block C -->
+<!-- RECOMMENDED ENTRY BLOCKS -->
+<div class="recommended" style="top:360px; left:720px;"></div>
+<div class="recommended" style="top:200px; left:260px;"></div>
 
 <p id="location" class="location"></p>
 
@@ -161,27 +201,26 @@ font-weight:500;
 
 <script>
 
-/* Navigation instructions */
+/* ---------------- NAVIGATION ---------------- */
 
 function navigate(){
 
 let dest = document.getElementById("destination").value
-
 let text=""
 
 if(dest=="Platform 1"){
 text="➡ Walk towards staircase and reach Platform 1"
 }
 
-if(dest=="Platform 2"){
-text="➡ Use FOB and reach Platform 2"
+else if(dest=="Platform 2"){
+text="➡ Use Foot Over Bridge and reach Platform 2"
 }
 
-if(dest=="Parking"){
+else if(dest=="Parking"){
 text="➡ Exit towards Block C parking area"
 }
 
-if(dest=="Ticket Counter"){
+else if(dest=="Ticket Counter"){
 text="➡ Ticket counter available near Block A entrance"
 }
 
@@ -189,7 +228,7 @@ document.getElementById("result").innerHTML=text
 
 }
 
-/* Block positions on map */
+/* ---------------- BLOCK POSITIONS ---------------- */
 
 const blockPositions = {
 
@@ -200,13 +239,13 @@ D:{top:"390px",left:"430px"}
 
 }
 
-/* Detect QR block */
+/* ---------------- QR BLOCK LOCATION ---------------- */
 
 const params = new URLSearchParams(window.location.search)
 
 const block = params.get("block")
 
-if(block){
+if(block && blockPositions[block]){
 
 document.getElementById("location").innerHTML =
 "📍 You are at Block " + block
@@ -214,34 +253,72 @@ document.getElementById("location").innerHTML =
 const marker=document.getElementById("marker")
 
 marker.style.display="block"
-
 marker.style.top=blockPositions[block].top
 marker.style.left=blockPositions[block].left
 
 }
 
+/* ---------------- LOAD AMENITIES ---------------- */
+
 async function loadAmenities(){
 
 let res = await fetch("../data/amenities.json")
-
 let data = await res.json()
 
 let amenities = data["PUVM"]
 
+let map=document.getElementById("mapContainer")
+
 amenities.forEach(a=>{
 
 let icon=document.createElement("div")
-
+icon.className="amenity"
+icon.id=a.id
 icon.innerHTML=a.icon
 
-icon.style.position="absolute"
 icon.style.left=a.x+"px"
 icon.style.top=a.y+"px"
-icon.style.fontSize="20px"
 
-document.querySelector(".map-container").appendChild(icon)
+/* tooltip */
+
+let tooltip=document.createElement("div")
+tooltip.className="tooltip"
+tooltip.innerText=a.name
+
+icon.appendChild(tooltip)
+
+icon.addEventListener("mouseenter",()=>{
+tooltip.style.display="block"
+})
+
+icon.addEventListener("mouseleave",()=>{
+tooltip.style.display="none"
+})
+
+map.appendChild(icon)
 
 })
+
+/* highlight amenity from QR */
+
+const amenity = params.get("amenity")
+
+if(amenity){
+
+let el=document.getElementById(amenity)
+
+if(el){
+
+el.classList.add("highlight")
+
+el.scrollIntoView({
+behavior:"smooth",
+block:"center"
+})
+
+}
+
+}
 
 }
 

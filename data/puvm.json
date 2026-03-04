@@ -1,0 +1,16 @@
+{
+ "station":"PUVM",
+ "name":"Puzhuthivakkam MRTS",
+ "blocks":[
+  {
+   "block":"A",
+   "platform":"1",
+   "amenities":[]
+  },
+  {
+   "block":"C",
+   "platform":"2",
+   "amenities":[]
+  }
+ ]
+}

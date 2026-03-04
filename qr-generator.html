@@ -3,26 +3,56 @@
 
 <head>
 
-<title>QR Generator</title>
+<title>QR Code Generator</title>
 
-<script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
 <style>
 
 body{
-font-family:Poppins;
+font-family:'Poppins',sans-serif;
+margin:0;
+background:#f4f7fb;
 text-align:center;
-padding:40px;
-background:#f5f7fb;
 }
 
-select,button{
-padding:10px;
-margin-top:10px;
+header{
+background:#0f4c81;
+color:white;
+padding:20px;
 }
 
-#qrcode{
+.container{
+max-width:1000px;
+margin:auto;
+padding:20px;
+}
+
+.station{
+margin-top:30px;
+}
+
+.qr-grid{
+display:flex;
+flex-wrap:wrap;
+gap:25px;
+justify-content:center;
 margin-top:20px;
+}
+
+.qr-card{
+background:white;
+padding:15px;
+border-radius:10px;
+box-shadow:0 5px 15px rgba(0,0,0,0.15);
+width:150px;
+}
+
+.qr-card p{
+font-size:13px;
+margin-top:8px;
 }
 
 </style>
@@ -31,45 +61,73 @@ margin-top:20px;
 
 <body>
 
-<h2>Station QR Generator</h2>
+<header>
 
-<select id="station">
+<h2>Station Amenity QR Generator</h2>
 
-<option value="stations/puvm.html?block=A">PUVM Block A</option>
-<option value="stations/puvm.html?block=C">PUVM Block C</option>
+</header>
 
-<option value="stations/adbm.html?block=C">ADBM Block C</option>
-<option value="stations/adbm.html?block=D">ADBM Block D</option>
-
-<option value="stations/vlcy.html?block=A">VLCY Block A</option>
-
-<option value="stations/stm.html?block=A">STM Block A</option>
-
-</select>
-
-<br>
-
-<button onclick="generateQR()">Generate QR</button>
-
-<div id="qrcode"></div>
+<div class="container" id="qrContainer"></div>
 
 <script>
 
-function generateQR(){
+async function generateQR(){
 
-document.getElementById("qrcode").innerHTML=""
+let res = await fetch("data/amenities.json")
 
-let url=document.getElementById("station").value
+let data = await res.json()
 
-new QRCode(document.getElementById("qrcode"),{
+let container = document.getElementById("qrContainer")
 
-text:url,
-width:200,
-height:200
+Object.keys(data).forEach(station =>{
+
+let stationDiv=document.createElement("div")
+
+stationDiv.className="station"
+
+stationDiv.innerHTML="<h3>"+station+" Station</h3>"
+
+let grid=document.createElement("div")
+
+grid.className="qr-grid"
+
+data[station].forEach(amenity=>{
+
+let card=document.createElement("div")
+
+card.className="qr-card"
+
+let qrDiv=document.createElement("div")
+
+let text="stations/"+station.toLowerCase()+".html?amenity="+amenity.id
+
+new QRCode(qrDiv,{
+text:window.location.origin+"/"+text,
+width:120,
+height:120
+})
+
+let label=document.createElement("p")
+
+label.innerText=amenity.name
+
+card.appendChild(qrDiv)
+
+card.appendChild(label)
+
+grid.appendChild(card)
+
+})
+
+stationDiv.appendChild(grid)
+
+container.appendChild(stationDiv)
 
 })
 
 }
+
+generateQR()
 
 </script>
 
