@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>QR Generator</title>
+
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+
+<style>
+
+body{
+font-family:Poppins;
+text-align:center;
+padding:40px;
+background:#f5f7fb;
+}
+
+select,button{
+padding:10px;
+margin-top:10px;
+}
+
+#qrcode{
+margin-top:20px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h2>Station QR Generator</h2>
+
+<select id="station">
+
+<option value="stations/puvm.html?block=A">PUVM Block A</option>
+<option value="stations/puvm.html?block=C">PUVM Block C</option>
+
+<option value="stations/adbm.html?block=C">ADBM Block C</option>
+<option value="stations/adbm.html?block=D">ADBM Block D</option>
+
+<option value="stations/vlcy.html?block=A">VLCY Block A</option>
+
+<option value="stations/stm.html?block=A">STM Block A</option>
+
+</select>
+
+<br>
+
+<button onclick="generateQR()">Generate QR</button>
+
+<div id="qrcode"></div>
+
+<script>
+
+function generateQR(){
+
+document.getElementById("qrcode").innerHTML=""
+
+let url=document.getElementById("station").value
+
+new QRCode(document.getElementById("qrcode"),{
+
+text:url,
+width:200,
+height:200
+
+})
+
+}
+
+</script>
+
+</body>
+
+</html>

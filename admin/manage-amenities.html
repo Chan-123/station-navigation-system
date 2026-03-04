@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Manage Amenities</title>
+
+<style>
+
+body{
+font-family:Poppins;
+padding:40px;
+background:#f5f7fb;
+}
+
+table{
+border-collapse:collapse;
+width:600px;
+background:white;
+}
+
+th,td{
+padding:10px;
+border:1px solid #ddd;
+}
+
+button{
+padding:6px 10px;
+margin:2px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h2>Station Amenities Management</h2>
+
+<select id="station">
+<option value="PUVM">PUVM</option>
+<option value="ADBM">ADBM</option>
+<option value="VLCY">VLCY</option>
+<option value="STM">STM</option>
+</select>
+
+<button onclick="loadAmenities()">Load</button>
+
+<table id="table">
+
+<tr>
+<th>Icon</th>
+<th>Name</th>
+<th>X</th>
+<th>Y</th>
+<th>Action</th>
+</tr>
+
+</table>
+
+<script>
+
+let data
+
+async function loadAmenities(){
+
+let res = await fetch("../data/amenities.json")
+
+data = await res.json()
+
+let station = document.getElementById("station").value
+
+let table = document.getElementById("table")
+
+table.innerHTML = `
+<tr>
+<th>Icon</th>
+<th>Name</th>
+<th>X</th>
+<th>Y</th>
+<th>Action</th>
+</tr>
+`
+
+data[station].forEach((a,i)=>{
+
+table.innerHTML += `
+<tr>
+<td>${a.icon}</td>
+<td>${a.name}</td>
+<td>${a.x}</td>
+<td>${a.y}</td>
+<td>
+<button onclick="deleteAmenity(${i})">Delete</button>
+</td>
+</tr>
+`
+
+})
+
+}
+
+function deleteAmenity(i){
+
+let station = document.getElementById("station").value
+
+data[station].splice(i,1)
+
+loadAmenities()
+
+}
+
+</script>
+
+</body>
+
+</html>

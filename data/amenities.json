@@ -1,0 +1,24 @@
+{
+  "PUVM":[
+    {"name":"Toilet","icon":"🚻","x":260,"y":210},
+    {"name":"Lift","icon":"🛗","x":350,"y":360},
+    {"name":"Ticket Counter","icon":"🎫","x":720,"y":360},
+    {"name":"Parking","icon":"🅿","x":260,"y":380}
+  ],
+
+  "ADBM":[
+    {"name":"Toilet","icon":"🚻","x":420,"y":210},
+    {"name":"Lift","icon":"🛗","x":420,"y":380},
+    {"name":"Ticket Counter","icon":"🎫","x":430,"y":390}
+  ],
+
+  "VLCY":[
+    {"name":"Ticket Counter","icon":"🎫","x":160,"y":210},
+    {"name":"Lift","icon":"🛗","x":430,"y":210}
+  ],
+
+  "STM":[
+    {"name":"Toilet","icon":"🚻","x":160,"y":210},
+    {"name":"Parking","icon":"🅿","x":420,"y":380}
+  ]
+}
