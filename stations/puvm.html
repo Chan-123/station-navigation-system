@@ -182,7 +182,7 @@ padding:5px;
 
 <button onclick="navigate()">Navigate</button>
 
-<p id="result" class="result"></p>
+<div id="result" class="result"></div>
 
 </div>
 
@@ -361,6 +361,44 @@ svg.appendChild(end)
 
 }
 
+function generateInstructions(points){
+
+let steps=[]
+
+for(let i=1;i<points.length;i++){
+
+let prev=points[i-1]
+let curr=points[i]
+
+let dx=curr.x-prev.x
+let dy=curr.y-prev.y
+
+if(Math.abs(dx)>Math.abs(dy)){
+
+if(dx>0){
+steps.push("➡ Walk towards the right")
+}else{
+steps.push("⬅ Walk towards the left")
+}
+
+}else{
+
+if(dy>0){
+steps.push("⬇ Walk forward")
+}else{
+steps.push("⬆ Walk upward")
+}
+
+}
+
+}
+
+steps.push("🎯 Destination reached")
+
+return steps
+
+}
+
 /* ---------------- NAVIGATION ---------------- */
 
 function navigate(){
@@ -387,8 +425,19 @@ let points=[currentLocation,nodes[destinationNode]]
 
 drawRoute(points)
 
-return
+/* GENERATE INSTRUCTIONS */
 
+let steps = generateInstructions(points)
+
+let html=""
+
+steps.forEach((s,i)=>{
+html += (i+1)+". "+s+"<br>"
+})
+
+document.getElementById("result").innerHTML = html
+
+return
 }
 
 if(!block){
@@ -408,24 +457,17 @@ let points=pathToPoints(path)
 
 drawRoute(points)
 
-if(dest=="Platform 1"){
-text="➡ Walk towards staircase and reach Platform 1"
-}
+/* GENERATE INSTRUCTIONS */
 
-else if(dest=="Platform 2"){
-text="➡ Use Foot Over Bridge and reach Platform 2"
-}
+let steps = generateInstructions(points)
 
-else if(dest=="Parking"){
-text="➡ Exit towards Block C parking area"
-}
+let html=""
 
-else if(dest=="Ticket Counter"){
-text="➡ Ticket counter available near Block A entrance"
-}
+steps.forEach((s,i)=>{
+html += (i+1)+". "+s+"<br>"
+})
 
-document.getElementById("result").innerHTML=text
-
+document.getElementById("result").innerHTML = html
 }
 
 /* ---------------- BLOCK POSITIONS ---------------- */
