@@ -8,7 +8,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
 
 body{
@@ -48,6 +49,21 @@ padding:15px;
 border-radius:10px;
 box-shadow:0 5px 15px rgba(0,0,0,0.15);
 width:150px;
+}
+
+.download-btn{
+margin-top:8px;
+padding:6px 10px;
+background:#0f4c81;
+color:white;
+border:none;
+border-radius:5px;
+font-size:12px;
+cursor:pointer;
+}
+
+.download-btn:hover{
+background:#1e6fb9;
 }
 
 .qr-card p{
@@ -94,7 +110,6 @@ grid.className="qr-grid"
 data[station].forEach(amenity=>{
 
 let card=document.createElement("div")
-
 card.className="qr-card"
 
 let qrDiv=document.createElement("div")
@@ -108,12 +123,21 @@ height:120
 })
 
 let label=document.createElement("p")
-
 label.innerText=amenity.name
 
-card.appendChild(qrDiv)
+/* DOWNLOAD BUTTON */
 
+let btn=document.createElement("button")
+btn.innerText="Download PDF"
+btn.className="download-btn"
+
+btn.onclick=function(){
+downloadQR(qrDiv,station,amenity)
+}
+
+card.appendChild(qrDiv)
 card.appendChild(label)
+card.appendChild(btn)
 
 grid.appendChild(card)
 
@@ -128,7 +152,82 @@ container.appendChild(stationDiv)
 }
 
 generateQR()
+async function downloadQR(qrDiv,station,amenity){
 
+const { jsPDF } = window.jspdf
+
+let canvas = qrDiv.querySelector("canvas")
+let qrImage = canvas.toDataURL("image/png")
+
+let pdf = new jsPDF("p","mm","a4")
+
+let width = 210
+let height = 297
+
+/* BORDER */
+
+pdf.setLineWidth(3)
+pdf.rect(10,10,width-20,height-20)
+
+/* LOAD LOGO */
+
+let img = new Image()
+img.src = "images/railway-logo.png"
+
+img.onload = function(){
+
+pdf.addImage(img,"PNG",90,15,30,30)
+
+/* HEADINGS */
+
+pdf.setFont("helvetica","bold")
+
+pdf.setFontSize(20)
+pdf.text("SOUTHERN RAILWAY",105,55,{align:"center"})
+
+pdf.setFontSize(16)
+pdf.text("CHENNAI DIVISION",105,65,{align:"center"})
+
+pdf.setFontSize(14)
+pdf.text(station+" MRTS STATION",105,80,{align:"center"})
+
+/* AMENITY */
+
+pdf.setFontSize(16)
+pdf.text(amenity.name.toUpperCase(),105,95,{align:"center"})
+
+/* LOCATION */
+
+pdf.setFont("helvetica","normal")
+
+pdf.setFontSize(12)
+
+let locationText =
+"Scan QR Code for Navigation to "+amenity.name+
+" inside "+station+" MRTS Station."
+
+pdf.text(locationText,105,110,{align:"center",maxWidth:160})
+
+/* QR CODE */
+
+pdf.addImage(qrImage,"PNG",65,130,80,80)
+
+/* FOOTER */
+
+pdf.setFontSize(10)
+
+pdf.text(
+"Smart Station Navigation System • Southern Railway",
+105,
+230,
+{align:"center"}
+)
+
+pdf.save(station+"_"+amenity.name+".pdf")
+
+}
+
+}
 </script>
 
 </body>
