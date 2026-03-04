@@ -57,6 +57,8 @@ height:18px;
 background:red;
 border-radius:50%;
 display:none;
+transform:translate(-50%,-50%);
+border:2px solid white;
 }
 
 .recommended{
@@ -368,6 +370,27 @@ let text=""
 
 let block=params.get("block")
 
+/* if user clicked map use that location */
+
+if(currentLocation){
+
+let dest=document.getElementById("destination").value
+
+let destinationNode=""
+
+if(dest==="Ticket Counter") destinationNode="ticket"
+if(dest==="Parking") destinationNode="parking"
+if(dest==="Platform 1") destinationNode="toilet"
+if(dest==="Platform 2") destinationNode="toilet"
+
+let points=[currentLocation,nodes[destinationNode]]
+
+drawRoute(points)
+
+return
+
+}
+
 if(!block){
 block="A"
 }
@@ -419,6 +442,31 @@ D:{top:"390px",left:"430px"}
 /* ---------------- QR BLOCK LOCATION ---------------- */
 
 const params = new URLSearchParams(window.location.search)
+/* ---------------- MAP CLICK LOCATION ---------------- */
+
+let currentLocation = null
+
+const map = document.getElementById("mapContainer")
+
+map.addEventListener("click",function(e){
+
+const rect = map.getBoundingClientRect()
+
+let x = e.clientX - rect.left
+let y = e.clientY - rect.top
+
+currentLocation = {x:x,y:y}
+
+const marker=document.getElementById("marker")
+
+marker.style.display="block"
+marker.style.left = x + "px"
+marker.style.top = y + "px"
+
+document.getElementById("location").innerHTML =
+"📍 Custom location selected"
+
+})
 
 const block=params.get("block")
 
