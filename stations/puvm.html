@@ -365,6 +365,9 @@ function generateInstructions(points){
 
 let steps=[]
 
+/* conversion factor: pixels → meters */
+const pixelToMeter = 0.1
+
 for(let i=1;i<points.length;i++){
 
 let prev=points[i-1]
@@ -373,27 +376,42 @@ let curr=points[i]
 let dx=curr.x-prev.x
 let dy=curr.y-prev.y
 
+/* distance */
+
+let distPixels = Math.sqrt(dx*dx + dy*dy)
+let distMeters = Math.round(distPixels * pixelToMeter)
+
+/* direction */
+
+let direction=""
+
 if(Math.abs(dx)>Math.abs(dy)){
 
 if(dx>0){
-steps.push("➡ Walk towards the right")
+direction="Walk right"
 }else{
-steps.push("⬅ Walk towards the left")
+direction="Walk left"
 }
 
 }else{
 
 if(dy>0){
-steps.push("⬇ Walk forward")
+direction="Walk straight"
 }else{
-steps.push("⬆ Walk upward")
+direction="Walk upward"
 }
 
 }
 
+/* instruction */
+
+steps.push(direction+" "+distMeters+" meters")
+
 }
 
-steps.push("🎯 Destination reached")
+/* destination message */
+
+steps.push("🎯 Destination ahead")
 
 return steps
 
