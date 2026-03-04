@@ -208,6 +208,18 @@ toilet:{x:260,y:210}
 
 }
 
+/* ---------------- LANDMARKS ---------------- */
+
+const landmarks = {
+
+FOB1:"Foot Over Bridge",
+FOB2:"Foot Over Bridge",
+ticket:"Ticket Counter",
+parking:"Parking Area",
+toilet:"Toilet"
+
+}
+
 /* ---------------- WALKABLE CONNECTIONS ---------------- */
 
 const edges = {
@@ -406,6 +418,18 @@ direction="Walk upward"
 /* instruction */
 
 steps.push(direction+" "+distMeters+" meters")
+
+/* check if this point is a landmark */
+
+let nodeName = Object.keys(nodes).find(
+key => nodes[key].x === curr.x && nodes[key].y === curr.y
+)
+
+if(nodeName && landmarks[nodeName]){
+
+steps.push("📍 Reach " + landmarks[nodeName])
+
+}
 
 }
 
