@@ -41,8 +41,6 @@ width:100%;
 border-radius:10px;
 }
 
-/* route overlay */
-
 .route-layer{
 position:absolute;
 top:0;
@@ -51,8 +49,6 @@ width:100%;
 height:100%;
 pointer-events:none;
 }
-
-/* QR location marker */
 
 .marker{
 position:absolute;
@@ -63,8 +59,6 @@ border-radius:50%;
 display:none;
 }
 
-/* recommended blocks */
-
 .recommended{
 position:absolute;
 width:30px;
@@ -72,8 +66,6 @@ height:30px;
 border:3px solid lime;
 border-radius:50%;
 }
-
-/* amenity icons */
 
 .amenity{
 position:absolute;
@@ -85,8 +77,6 @@ transform:translate(-50%,-50%);
 .amenity:hover{
 transform:translate(-50%,-50%) scale(1.2);
 }
-
-/* tooltip */
 
 .tooltip{
 position:absolute;
@@ -164,13 +154,10 @@ padding:5px;
 
 <img src="../maps/puvm-map.png" class="station-map">
 
-<!-- ROUTE LAYER -->
 <svg id="routeLayer" class="route-layer"></svg>
 
-<!-- CURRENT LOCATION -->
 <div id="marker" class="marker"></div>
 
-<!-- RECOMMENDED ENTRY BLOCKS -->
 <div class="recommended" style="top:360px; left:720px;"></div>
 <div class="recommended" style="top:200px; left:260px;"></div>
 
@@ -201,12 +188,77 @@ padding:5px;
 
 <script>
 
+/* ---------------- ROUTE DEFINITIONS ---------------- */
+
+const routes = {
+
+"A-Platform 1":[
+{x:150,y:200},
+{x:220,y:250},
+{x:260,y:300}
+],
+
+"A-Ticket Counter":[
+{x:150,y:200},
+{x:420,y:260},
+{x:720,y:360}
+],
+
+"A-Parking":[
+{x:150,y:200},
+{x:200,y:300},
+{x:260,y:380}
+],
+
+"C-Parking":[
+{x:160,y:380},
+{x:200,y:390},
+{x:260,y:380}
+]
+
+}
+
+/* ---------------- DRAW ROUTE ---------------- */
+
+function drawRoute(points){
+
+const svg=document.getElementById("routeLayer")
+
+svg.innerHTML=""
+
+let path="M "+points[0].x+" "+points[0].y
+
+for(let i=1;i<points.length;i++){
+
+path+=" L "+points[i].x+" "+points[i].y
+
+}
+
+svg.innerHTML=`
+<path d="${path}" stroke="#007bff" stroke-width="6"
+fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+`
+
+}
+
 /* ---------------- NAVIGATION ---------------- */
 
 function navigate(){
 
-let dest = document.getElementById("destination").value
+let dest=document.getElementById("destination").value
 let text=""
+
+let block=params.get("block")
+
+if(!block){
+block="A"
+}
+
+let routeKey=block+"-"+dest
+
+if(routes[routeKey]){
+drawRoute(routes[routeKey])
+}
 
 if(dest=="Platform 1"){
 text="➡ Walk towards staircase and reach Platform 1"
@@ -243,12 +295,12 @@ D:{top:"390px",left:"430px"}
 
 const params = new URLSearchParams(window.location.search)
 
-const block = params.get("block")
+const block=params.get("block")
 
 if(block && blockPositions[block]){
 
-document.getElementById("location").innerHTML =
-"📍 You are at Block " + block
+document.getElementById("location").innerHTML=
+"📍 You are at Block "+block
 
 const marker=document.getElementById("marker")
 
@@ -262,10 +314,10 @@ marker.style.left=blockPositions[block].left
 
 async function loadAmenities(){
 
-let res = await fetch("../data/amenities.json")
-let data = await res.json()
+let res=await fetch("../data/amenities.json")
+let data=await res.json()
 
-let amenities = data["PUVM"]
+let amenities=data["PUVM"]
 
 let map=document.getElementById("mapContainer")
 
@@ -278,8 +330,6 @@ icon.innerHTML=a.icon
 
 icon.style.left=a.x+"px"
 icon.style.top=a.y+"px"
-
-/* tooltip */
 
 let tooltip=document.createElement("div")
 tooltip.className="tooltip"
@@ -299,9 +349,7 @@ map.appendChild(icon)
 
 })
 
-/* highlight amenity from QR */
-
-const amenity = params.get("amenity")
+const amenity=params.get("amenity")
 
 if(amenity){
 
