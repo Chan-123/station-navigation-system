@@ -190,32 +190,98 @@ padding:5px;
 
 /* ---------------- ROUTE DEFINITIONS ---------------- */
 
-const routes = {
+/* ---------------- WALKING NODES ---------------- */
 
-"A-Platform 1":[
-{x:150,y:200},
-{x:220,y:250},
-{x:260,y:300}
-],
+const nodes = {
 
-"A-Ticket Counter":[
-{x:150,y:200},
-{x:420,y:260},
-{x:720,y:360}
-],
+A:{x:150,y:200},
+C:{x:160,y:380},
 
-"A-Parking":[
-{x:150,y:200},
-{x:200,y:300},
-{x:260,y:380}
-],
+FOB1:{x:300,y:250},
+FOB2:{x:300,y:340},
 
-"C-Parking":[
-{x:160,y:380},
-{x:200,y:390},
-{x:260,y:380}
-]
+ticket:{x:720,y:360},
+parking:{x:260,y:380},
+toilet:{x:260,y:210}
 
+}
+
+/* ---------------- WALKABLE CONNECTIONS ---------------- */
+
+const edges = {
+
+A:["FOB1"],
+C:["FOB2"],
+
+FOB1:["A","FOB2","ticket","toilet"],
+FOB2:["FOB1","parking","C"],
+
+ticket:["FOB1"],
+toilet:["FOB1"],
+parking:["FOB2"]
+
+}
+
+/* ---------------- DISTANCE ---------------- */
+
+function distance(a,b){
+
+let dx = nodes[a].x - nodes[b].x
+let dy = nodes[a].y - nodes[b].y
+
+return Math.sqrt(dx*dx + dy*dy)
+
+}
+
+/* ---------------- SHORTEST PATH ---------------- */
+
+function shortestPath(start,end){
+
+let dist={}
+let prev={}
+let queue=new Set(Object.keys(nodes))
+
+Object.keys(nodes).forEach(n=>{
+dist[n]=Infinity
+})
+
+dist[start]=0
+
+while(queue.size){
+
+let u=[...queue].reduce((a,b)=>dist[a]<dist[b]?a:b)
+
+queue.delete(u)
+
+if(u===end) break
+
+edges[u].forEach(v=>{
+
+let alt=dist[u]+distance(u,v)
+
+if(alt<dist[v]){
+dist[v]=alt
+prev[v]=u
+}
+
+})
+
+}
+
+let path=[]
+let u=end
+
+while(u){
+path.unshift(u)
+u=prev[u]
+}
+
+return path
+
+}
+
+function pathToPoints(path){
+return path.map(p=>nodes[p])
 }
 
 /* ---------------- DRAW ROUTE ---------------- */
@@ -306,11 +372,18 @@ if(!block){
 block="A"
 }
 
-let routeKey=block+"-"+dest
+let destinationNode=""
 
-if(routes[routeKey]){
-drawRoute(routes[routeKey])
-}
+if(dest==="Ticket Counter") destinationNode="ticket"
+if(dest==="Parking") destinationNode="parking"
+if(dest==="Platform 1") destinationNode="toilet"
+if(dest==="Platform 2") destinationNode="toilet"
+
+let path=shortestPath(block,destinationNode)
+
+let points=pathToPoints(path)
+
+drawRoute(points)
 
 if(dest=="Platform 1"){
 text="➡ Walk towards staircase and reach Platform 1"
