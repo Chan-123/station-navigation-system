@@ -33,6 +33,8 @@ padding:20px;
 
 .station{
 margin-top:30px;
+display:flex;
+justify-content:center;
 }
 
 .qr-grid{
@@ -94,24 +96,17 @@ let data = await res.json()
 
 let container = document.getElementById("qrContainer")
 
-Object.keys(data).forEach(station =>{
-
-let stationDiv=document.createElement("div")
-stationDiv.className="station"
-
-stationDiv.innerHTML="<h3>"+station+" Station</h3>"
+/* CREATE ONE GRID FOR ALL STATIONS */
 
 let grid=document.createElement("div")
 grid.className="qr-grid"
 
-/* QR CARD */
+Object.keys(data).forEach(station =>{
 
 let card=document.createElement("div")
 card.className="qr-card"
 
 let qrDiv=document.createElement("div")
-
-/* QR LINK → STATION PAGE */
 
 let text="stations/"+station.toLowerCase()+".html"
 
@@ -123,8 +118,6 @@ height:150
 
 let label=document.createElement("p")
 label.innerText=station+" Station"
-
-/* DOWNLOAD BUTTON */
 
 let btn=document.createElement("button")
 btn.innerText="Download PDF"
@@ -140,11 +133,9 @@ card.appendChild(btn)
 
 grid.appendChild(card)
 
-stationDiv.appendChild(grid)
-
-container.appendChild(stationDiv)
-
 })
+
+container.appendChild(grid)
 
 }
 
