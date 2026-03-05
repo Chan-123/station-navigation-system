@@ -3,30 +3,124 @@
 
 <head>
 
-<title>Manage Amenities</title>
+<title>Station Amenities Management</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 
 <style>
 
 body{
-font-family:Poppins;
-padding:40px;
-background:#f5f7fb;
+font-family:'Poppins',sans-serif;
+margin:0;
+background:linear-gradient(135deg,#0f4c81,#1e3c72);
+color:#333;
 }
 
-table{
-border-collapse:collapse;
-width:600px;
+/* HEADER */
+
+header{
+text-align:center;
+padding:30px;
+color:white;
+}
+
+.logo{
+width:80px;
+margin-bottom:10px;
+}
+
+header h1{
+margin:5px 0;
+font-size:26px;
+}
+
+header p{
+opacity:0.9;
+font-size:14px;
+}
+
+/* MAIN CARD */
+
+.container{
+max-width:900px;
+margin:30px auto;
 background:white;
+padding:30px;
+border-radius:12px;
+box-shadow:0 10px 30px rgba(0,0,0,0.3);
 }
 
-th,td{
-padding:10px;
-border:1px solid #ddd;
+/* CONTROLS */
+
+.controls{
+margin-bottom:20px;
+display:flex;
+gap:10px;
+align-items:center;
+}
+
+select{
+padding:8px 12px;
+border-radius:6px;
+border:1px solid #ccc;
+font-size:14px;
 }
 
 button{
-padding:6px 10px;
-margin:2px;
+padding:8px 14px;
+border:none;
+background:#0f4c81;
+color:white;
+border-radius:6px;
+cursor:pointer;
+font-size:14px;
+}
+
+button:hover{
+background:#1e6fb9;
+}
+
+/* TABLE */
+
+table{
+border-collapse:collapse;
+width:100%;
+margin-top:15px;
+}
+
+th{
+background:#0f4c81;
+color:white;
+padding:10px;
+font-weight:500;
+}
+
+td{
+padding:10px;
+border-bottom:1px solid #eee;
+text-align:center;
+}
+
+tr:hover{
+background:#f4f7fb;
+}
+
+/* DELETE BUTTON */
+
+.delete-btn{
+background:#c0392b;
+}
+
+.delete-btn:hover{
+background:#e74c3c;
+}
+
+footer{
+text-align:center;
+margin-top:20px;
+color:white;
+font-size:13px;
+opacity:0.8;
 }
 
 </style>
@@ -35,16 +129,31 @@ margin:2px;
 
 <body>
 
+<header>
+
+<img src="../images/railway-logo.png" class="logo">
+
+<h1>Southern Railway</h1>
+<p>Chennai Division</p>
+
 <h2>Station Amenities Management</h2>
 
+</header>
+
+<div class="container">
+
+<div class="controls">
+
 <select id="station">
-<option value="PUVM">PUVM</option>
-<option value="ADBM">ADBM</option>
-<option value="VLCY">VLCY</option>
-<option value="STM">STM</option>
+<option value="PUVM">PUVM - Puzhuthivakkam</option>
+<option value="ADBM">ADBM - Adambakkam</option>
+<option value="VLCY">VLCY - Velachery</option>
+<option value="STM">STM - St Thomas Mount</option>
 </select>
 
-<button onclick="loadAmenities()">Load</button>
+<button onclick="loadAmenities()">Load Amenities</button>
+
+</div>
 
 <table id="table">
 
@@ -57,6 +166,12 @@ margin:2px;
 </tr>
 
 </table>
+
+</div>
+
+<footer>
+Smart Station Navigation System • Southern Railway
+</footer>
 
 <script>
 
@@ -91,7 +206,9 @@ table.innerHTML += `
 <td>${a.x}</td>
 <td>${a.y}</td>
 <td>
-<button onclick="deleteAmenity(${i})">Delete</button>
+<button class="delete-btn" onclick="deleteAmenity(${i})">
+Delete
+</button>
 </td>
 </tr>
 `
