@@ -124,7 +124,7 @@ btn.innerText="Download PDF"
 btn.className="download-btn"
 
 btn.onclick=function(){
-downloadQR(qrDiv,station,{name:"Station Navigation"})
+downloadQR(qrDiv,station,{name:"Smart Station Navigation"})
 }
 
 card.appendChild(qrDiv)
@@ -191,8 +191,7 @@ pdf.setFont("helvetica","normal")
 pdf.setFontSize(12)
 
 let locationText =
-"Scan QR Code for Navigation to "+amenity.name+
-" inside "+station+" MRTS Station."
+"Scan the QR Code to navigate to station amenities inside "+station+" MRTS Station."
 
 pdf.text(locationText,105,110,{align:"center",maxWidth:160})
 
