@@ -132,7 +132,7 @@ font-weight:500;
 
 <div class="map-container">
 
-<img src="../maps/adbm-map.png" class="station-map">
+<img id="mapImage" src="../maps/ADBM BLOCK C Ground floor.PNG" class="station-map">
 
 <!-- current location marker -->
 <div id="marker" class="marker"></div>
@@ -165,6 +165,16 @@ font-weight:500;
 
 <select id="destination">
 
+<option value="Platform 1">Platform 1 (Towards Velachery)</option>
+<option value="Platform 2">Platform 2 (Towards St Thomas Mount)</option>
+<option value="Ticket Counter">Ticket Counter</option>
+<option value="Parking">Parking</option>
+<option value="Lift">Lift</option>
+<option value="Escalator">Escalator</option>
+<option value="Toilet">Toilet</option>
+
+</select>
+
 <option value="Platform 1">Platform 1</option>
 <option value="Platform 2">Platform 2</option>
 <option value="Parking">Parking</option>
@@ -181,6 +191,26 @@ font-weight:500;
 </div>
 
 <script>
+
+/* floor switching */
+
+function showFloor(floor){
+
+let map=document.getElementById("mapImage")
+
+if(floor==0){
+map.src="../maps/ADBM BLOCK C Ground floor.PNG"
+}
+
+if(floor==1){
+map.src="../maps/ADBM BLOCK C Ground floor to First floor.PNG"
+}
+
+if(floor==2){
+map.src="../maps/ADBM BLOCK C Second floor Platform.PNG"
+}
+
+}
 
 /* block coordinates */
 
@@ -212,19 +242,31 @@ let block=new URLSearchParams(window.location.search).get("block")
 let text=""
 
 if(dest=="Platform 1"){
-text="➡ Use staircase near Block C and go to Platform 1"
+
+showFloor(2)
+
+text="➡ Take stairs/escalator to platform level and go to Platform 1 (Towards Velachery)"
+
 }
 
 if(dest=="Platform 2"){
-text="➡ Walk towards FOB and reach Platform 2"
+
+showFloor(2)
+
+text="➡ Take stairs/escalator to platform level and go to Platform 2 (Towards St Thomas Mount)"
+
 }
 
-if(dest=="Parking"){
-text="➡ Exit near Block D parking area"
+if(dest=="Lift"){
+text="➡ Lift available near Block C staircase"
 }
 
-if(dest=="Ticket Counter"){
-text="➡ Ticket counter available near Block D entrance"
+if(dest=="Escalator"){
+text="➡ Escalator available near Block C platform access"
+}
+
+if(dest=="Toilet"){
+text="➡ Toilet available near Block B area"
 }
 
 document.getElementById("result").innerHTML=text
@@ -240,9 +282,27 @@ function drawRoute(){
 let line=document.getElementById("routeLine")
 
 line.style.display="block"
+
+let dest=document.getElementById("destination").value
+
+if(dest=="Platform 1" || dest=="Platform 2"){
+
+showFloor(2)
+
+line.style.top="220px"
+line.style.left="150px"
+line.style.width="400px"
+
+}
+else{
+
+showFloor(0)
+
 line.style.top="300px"
 line.style.left="150px"
 line.style.width="280px"
+
+}
 
 }
 
