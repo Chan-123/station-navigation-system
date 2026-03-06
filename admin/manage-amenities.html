@@ -225,9 +225,20 @@ async function loadAmenities(){
 
 if(!data){
 
-let res = await fetch("../data/amenities.json")
+/* load from localStorage first */
 
+let saved = localStorage.getItem("stationAmenities")
+
+if(saved){
+
+data = JSON.parse(saved)
+
+}else{
+
+let res = await fetch("../data/amenities.json")
 data = await res.json()
+
+}
 
 }
 
@@ -271,6 +282,10 @@ let station = document.getElementById("station").value
 
 data[station].splice(i,1)
 
+/* update localStorage */
+
+localStorage.setItem("stationAmenities", JSON.stringify(data))
+
 loadAmenities()
 
 }
@@ -296,6 +311,10 @@ icon:icon,
 x:x,
 y:y
 })
+
+localStorage.setItem("stationAmenities", JSON.stringify(data))
+
+loadAmenities()
 
 loadAmenities()
 
