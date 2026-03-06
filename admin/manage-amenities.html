@@ -130,6 +130,18 @@ font-size:13px;
 opacity:0.8;
 }
 
+.map-editor{
+margin-top:20px;
+text-align:center;
+}
+
+#mapEditor{
+width:100%;
+max-width:700px;
+border-radius:10px;
+cursor:crosshair;
+box-shadow:0 5px 15px rgba(0,0,0,0.2);
+}
 </style>
 
 </head>
@@ -148,6 +160,14 @@ opacity:0.8;
 </header>
 
 <div class="container">
+
+<h3>Click Map to Capture Coordinates</h3>
+
+<div class="map-editor">
+
+<img id="mapEditor" src="../maps/puvm-map.png">
+
+</div>
 
 <div class="controls">
 
@@ -320,6 +340,39 @@ loadAmenities()
 
 }
 
+/* capture coordinates from map click */
+
+document.getElementById("mapEditor").addEventListener("click",function(e){
+
+let rect=this.getBoundingClientRect()
+
+let x=Math.round(e.clientX - rect.left)
+let y=Math.round(e.clientY - rect.top)
+
+document.getElementById("xCoord").value=x
+document.getElementById("yCoord").value=y
+
+})
+
+document.getElementById("station").addEventListener("change",function(){
+
+let station=this.value
+
+let map=document.getElementById("mapEditor")
+
+if(station=="PUVM")
+map.src="../maps/puvm-map.png"
+
+if(station=="ADBM")
+map.src="../maps/ADBM BLOCK C Ground floor.PNG"
+
+if(station=="VLCY")
+map.src="../maps/vlcy-map.png"
+
+if(station=="STM")
+map.src="../maps/stm-map.png"
+
+})
 </script>
 
 </body>
