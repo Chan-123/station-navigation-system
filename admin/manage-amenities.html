@@ -66,6 +66,13 @@ border:1px solid #ccc;
 font-size:14px;
 }
 
+input{
+padding:8px;
+border-radius:6px;
+border:1px solid #ccc;
+width:120px;
+}
+
 button{
 padding:8px 14px;
 border:none;
@@ -155,6 +162,43 @@ opacity:0.8;
 
 </div>
 
+<hr style="margin:20px 0">
+
+<h3>Add New Amenity</h3>
+
+<div class="controls">
+
+<select id="amenityName">
+
+<option value="Ticket Counter">Ticket Counter</option>
+<option value="Toilet">Toilet</option>
+<option value="Escalator">Escalator</option>
+<option value="Lift">Lift</option>
+<option value="Staircase">Staircase</option>
+<option value="Platform 1">Platform Number 1 (Towards Beach)</option>
+<option value="Platform 2">Platform Number 2 (Towards St Thomas Mount)</option>
+
+</select>
+
+<select id="amenityIcon">
+
+<option value="🎫">🎫 Ticket</option>
+<option value="🚻">🚻 Toilet</option>
+<option value="🛗">🛗 Lift</option>
+<option value="⬆">⬆ Escalator</option>
+<option value="🪜">🪜 Staircase</option>
+<option value="🚆">🚆 Platform</option>
+
+</select>
+
+<input id="xCoord" type="number" placeholder="X position">
+
+<input id="yCoord" type="number" placeholder="Y position">
+
+<button onclick="addAmenity()">Add Amenity</button>
+
+</div>
+
 <table id="table">
 
 <tr>
@@ -179,9 +223,13 @@ let data
 
 async function loadAmenities(){
 
+if(!data){
+
 let res = await fetch("../data/amenities.json")
 
 data = await res.json()
+
+}
 
 let station = document.getElementById("station").value
 
@@ -222,6 +270,32 @@ function deleteAmenity(i){
 let station = document.getElementById("station").value
 
 data[station].splice(i,1)
+
+loadAmenities()
+
+}
+
+function addAmenity(){
+
+let station=document.getElementById("station").value
+
+let name=document.getElementById("amenityName").value
+let icon=document.getElementById("amenityIcon").value
+
+let x=parseInt(document.getElementById("xCoord").value)
+let y=parseInt(document.getElementById("yCoord").value)
+
+if(!x || !y){
+alert("Enter X and Y coordinates")
+return
+}
+
+data[station].push({
+name:name,
+icon:icon,
+x:x,
+y:y
+})
 
 loadAmenities()
 
