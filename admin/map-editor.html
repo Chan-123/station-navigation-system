@@ -12,8 +12,8 @@
 body{
 font-family:Poppins;
 margin:0;
-text-align:center;
 background:#f4f7fb;
+text-align:center;
 }
 
 header{
@@ -43,6 +43,24 @@ cursor:move;
 transform:translate(-50%,-50%);
 }
 
+.controls{
+margin-top:20px;
+}
+
+select{
+padding:8px;
+margin-right:10px;
+}
+
+button{
+padding:8px 14px;
+background:#0f4c81;
+color:white;
+border:none;
+border-radius:5px;
+cursor:pointer;
+}
+
 </style>
 
 </head>
@@ -50,8 +68,24 @@ transform:translate(-50%,-50%);
 <body>
 
 <header>
+
 <h2>Station Map Editor</h2>
+
 </header>
+
+<div class="controls">
+
+<select id="amenityType">
+
+<option value="toilet">🚻 Toilet</option>
+<option value="lift">🛗 Lift</option>
+<option value="ticket">🎫 Ticket Counter</option>
+<option value="parking">🅿 Parking</option>
+<option value="water">💧 Drinking Water</option>
+
+</select>
+
+</div>
 
 <div class="map-container" id="map">
 
@@ -63,7 +97,7 @@ transform:translate(-50%,-50%);
 
 const map=document.getElementById("map")
 
-/* CLICK TO ADD AMENITY */
+/* CLICK MAP TO ADD AMENITY */
 
 map.addEventListener("click",(e)=>{
 
@@ -72,11 +106,21 @@ const rect=map.getBoundingClientRect()
 let x=e.clientX-rect.left
 let y=e.clientY-rect.top
 
-createMarker(x,y,"🚻","toilet")
+let type=document.getElementById("amenityType").value
+
+let icons={
+toilet:"🚻",
+lift:"🛗",
+ticket:"🎫",
+parking:"🅿",
+water:"💧"
+}
+
+createMarker(x,y,icons[type],type)
 
 })
 
-function createMarker(x,y,icon,id){
+function createMarker(x,y,icon,type){
 
 let marker=document.createElement("div")
 
@@ -86,17 +130,15 @@ marker.innerHTML=icon
 marker.style.left=x+"px"
 marker.style.top=y+"px"
 
-marker.dataset.id=id
-
 map.appendChild(marker)
 
-dragElement(marker)
+dragElement(marker,type)
 
 }
 
 /* DRAG FUNCTION */
 
-function dragElement(el){
+function dragElement(el,type){
 
 let offsetX,offsetY
 
@@ -115,7 +157,7 @@ let y=e.clientY-rect.top-offsetY
 el.style.left=x+"px"
 el.style.top=y+"px"
 
-console.log("X:",Math.round(x),"Y:",Math.round(y))
+console.log(type,"X:",Math.round(x),"Y:",Math.round(y))
 
 }
 
