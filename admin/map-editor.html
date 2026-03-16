@@ -22,10 +22,28 @@ color:white;
 padding:20px;
 }
 
+.controls{
+margin:20px;
+}
+
+select{
+padding:8px;
+margin-right:10px;
+}
+
+button{
+padding:8px 14px;
+background:#0f4c81;
+color:white;
+border:none;
+border-radius:5px;
+cursor:pointer;
+}
+
 .map-container{
 position:relative;
 width:900px;
-margin:30px auto;
+margin:auto;
 background:white;
 padding:20px;
 border-radius:10px;
@@ -43,24 +61,6 @@ cursor:move;
 transform:translate(-50%,-50%);
 }
 
-.controls{
-margin-top:20px;
-}
-
-select{
-padding:8px;
-margin-right:10px;
-}
-
-button{
-padding:8px 14px;
-background:#0f4c81;
-color:white;
-border:none;
-border-radius:5px;
-cursor:pointer;
-}
-
 </style>
 
 </head>
@@ -75,6 +75,15 @@ cursor:pointer;
 
 <div class="controls">
 
+<select id="station">
+
+<option value="PUVM">PUVM</option>
+<option value="ADBM">ADBM</option>
+<option value="VLCY">VLCY</option>
+<option value="STM">STM</option>
+
+</select>
+
 <select id="amenityType">
 
 <option value="toilet">🚻 Toilet</option>
@@ -84,6 +93,8 @@ cursor:pointer;
 <option value="water">💧 Drinking Water</option>
 
 </select>
+
+<button onclick="saveAmenities()">Save</button>
 
 </div>
 
@@ -95,9 +106,43 @@ cursor:pointer;
 
 <script>
 
+let amenities={}
+
 const map=document.getElementById("map")
 
-/* CLICK MAP TO ADD AMENITY */
+/* LOAD SAVED DATA */
+
+function loadAmenities(){
+
+let stored=localStorage.getItem("amenities")
+
+if(stored){
+amenities=JSON.parse(stored)
+}
+
+drawAmenities()
+
+}
+
+/* DRAW ICONS */
+
+function drawAmenities(){
+
+map.querySelectorAll(".marker").forEach(m=>m.remove())
+
+let station=document.getElementById("station").value
+
+if(!amenities[station]) return
+
+amenities[station].forEach(a=>{
+
+createMarker(a.x,a.y,a.icon,a.id)
+
+})
+
+}
+
+/* CLICK MAP */
 
 map.addEventListener("click",(e)=>{
 
@@ -116,9 +161,25 @@ parking:"🅿",
 water:"💧"
 }
 
+let station=document.getElementById("station").value
+
+if(!amenities[station]){
+amenities[station]=[]
+}
+
+amenities[station].push({
+id:type,
+name:type,
+icon:icons[type],
+x:Math.round(x),
+y:Math.round(y)
+})
+
 createMarker(x,y,icons[type],type)
 
 })
+
+/* CREATE ICON */
 
 function createMarker(x,y,icon,type){
 
@@ -134,9 +195,19 @@ map.appendChild(marker)
 
 dragElement(marker,type)
 
+marker.onclick=function(){
+
+if(confirm("Delete this amenity?")){
+
+marker.remove()
+
 }
 
-/* DRAG FUNCTION */
+}
+
+}
+
+/* DRAG ICON */
 
 function dragElement(el,type){
 
@@ -157,8 +228,6 @@ let y=e.clientY-rect.top-offsetY
 el.style.left=x+"px"
 el.style.top=y+"px"
 
-console.log(type,"X:",Math.round(x),"Y:",Math.round(y))
-
 }
 
 document.onmouseup=function(){
@@ -171,7 +240,24 @@ document.onmousemove=null
 
 }
 
+/* SAVE */
+
+function saveAmenities(){
+
+localStorage.setItem("amenities",JSON.stringify(amenities))
+
+alert("Amenities saved successfully")
+
+}
+
+/* SWITCH STATION */
+
+document.getElementById("station").addEventListener("change",drawAmenities)
+
+loadAmenities()
+
 </script>
 
 </body>
+
 </html>
