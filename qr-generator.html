@@ -89,17 +89,7 @@ margin-top:8px;
 
 <script>
 
-async function generateQR(){
-
-let res = await fetch("data/amenities.json")
-let data = await res.json()
-
-let container = document.getElementById("qrContainer")
-
-/* CREATE ONE GRID FOR ALL STATIONS */
-
-let grid=document.createElement("div")
-grid.className="qr-grid"
+/* ---------------- GENERATE QR CODES ---------------- */
 
 async function generateQR(){
 
@@ -108,10 +98,16 @@ let data = await res.json()
 
 let container = document.getElementById("qrContainer")
 
+container.innerHTML=""
+
 let grid=document.createElement("div")
 grid.className="qr-grid"
 
-Object.keys(data).forEach(station =>{
+/* LOOP THROUGH STATIONS */
+
+Object.keys(data).forEach(station=>{
+
+/* LOOP THROUGH AMENITIES */
 
 data[station].forEach(a=>{
 
@@ -120,16 +116,27 @@ card.className="qr-card"
 
 let qrDiv=document.createElement("div")
 
-let text="stations/"+station.toLowerCase()+".html?amenity="+a.id
+/* QR URL */
+
+let url =
+window.location.origin +
+"/station-navigation-system/stations/" +
+station.toLowerCase() +
+".html?amenity=" +
+a.id
 
 new QRCode(qrDiv,{
-text:window.location.origin+"/station-navigation-system/"+text,
+text:url,
 width:150,
 height:150
 })
 
+/* LABEL */
+
 let label=document.createElement("p")
 label.innerText=station+" - "+a.name
+
+/* DOWNLOAD BUTTON */
 
 let btn=document.createElement("button")
 btn.innerText="Download PDF"
@@ -153,13 +160,13 @@ container.appendChild(grid)
 
 }
 
-generateQR()
-
-container.appendChild(grid)
-
-}
+/* RUN GENERATOR */
 
 generateQR()
+
+
+/* ---------------- DOWNLOAD QR PDF ---------------- */
+
 async function downloadQR(qrDiv,station,amenity){
 
 const { jsPDF } = window.jspdf
@@ -177,7 +184,7 @@ let height = 297
 pdf.setLineWidth(3)
 pdf.rect(10,10,width-20,height-20)
 
-/* LOAD LOGO */
+/* LOGO */
 
 let img = new Image()
 img.src = "images/railway-logo.png"
@@ -204,25 +211,24 @@ pdf.text(station+" MRTS STATION",105,80,{align:"center"})
 pdf.setFontSize(16)
 pdf.text(amenity.name.toUpperCase(),105,95,{align:"center"})
 
-/* LOCATION */
+/* DESCRIPTION */
 
 pdf.setFont("helvetica","normal")
-
 pdf.setFontSize(12)
 
 let locationText =
-"Scan the QR Code to navigate to station amenities inside "+station+" MRTS Station."
+"Scan the QR code to navigate to "+amenity.name+
+" inside "+station+" MRTS Station."
 
 pdf.text(locationText,105,110,{align:"center",maxWidth:160})
 
-/* QR CODE */
+/* QR */
 
 pdf.addImage(qrImage,"PNG",65,130,80,80)
 
 /* FOOTER */
 
 pdf.setFontSize(10)
-
 pdf.text(
 "Smart Station Navigation System • Southern Railway",
 105,
@@ -235,6 +241,7 @@ pdf.save(station+"_"+amenity.name+".pdf")
 }
 
 }
+
 </script>
 
 </body>
