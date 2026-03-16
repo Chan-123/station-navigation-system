@@ -101,30 +101,42 @@ let container = document.getElementById("qrContainer")
 let grid=document.createElement("div")
 grid.className="qr-grid"
 
+async function generateQR(){
+
+let res = await fetch("data/amenities.json")
+let data = await res.json()
+
+let container = document.getElementById("qrContainer")
+
+let grid=document.createElement("div")
+grid.className="qr-grid"
+
 Object.keys(data).forEach(station =>{
+
+data[station].forEach(a=>{
 
 let card=document.createElement("div")
 card.className="qr-card"
 
 let qrDiv=document.createElement("div")
 
-let text="stations/"+station.toLowerCase()+".html"
+let text="stations/"+station.toLowerCase()+".html?amenity="+a.id
 
 new QRCode(qrDiv,{
-text:window.location.origin+"/"+text,
+text:window.location.origin+"/station-navigation-system/"+text,
 width:150,
 height:150
 })
 
 let label=document.createElement("p")
-label.innerText=station+" Station"
+label.innerText=station+" - "+a.name
 
 let btn=document.createElement("button")
 btn.innerText="Download PDF"
 btn.className="download-btn"
 
 btn.onclick=function(){
-downloadQR(qrDiv,station,{name:"Smart Station Navigation"})
+downloadQR(qrDiv,station,a)
 }
 
 card.appendChild(qrDiv)
@@ -134,6 +146,14 @@ card.appendChild(btn)
 grid.appendChild(card)
 
 })
+
+})
+
+container.appendChild(grid)
+
+}
+
+generateQR()
 
 container.appendChild(grid)
 

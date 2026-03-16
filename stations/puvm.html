@@ -526,6 +526,28 @@ D:{top:"390px",left:"430px"}
 /* ---------------- QR BLOCK LOCATION ---------------- */
 
 const params = new URLSearchParams(window.location.search)
+const amenity=params.get("amenity")
+
+if(amenity){
+
+let marker=document.getElementById("marker")
+
+marker.style.display="block"
+
+let amenities={
+toilet:{top:"210px",left:"260px"},
+lift:{top:"360px",left:"350px"},
+ticket:{top:"360px",left:"720px"},
+parking:{top:"380px",left:"260px"}
+}
+
+marker.style.top=amenities[amenity].top
+marker.style.left=amenities[amenity].left
+
+document.getElementById("location").innerHTML=
+"📍 You are near "+amenity
+
+}
 /* ---------------- MAP CLICK LOCATION ---------------- */
 
 let currentLocation = null
